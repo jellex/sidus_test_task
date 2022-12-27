@@ -11,8 +11,10 @@ services:
       - ./:/code
     links:
       - pgsql
+      - redis
     environment:
       DATABASE_URL: 'postgres://sidus:Nuwr5bbT@pgsql/sidus_backend'
+      REDIS_URL: 'redis://redis'
 
   pgsql:
     image: postgres:14-alpine
@@ -23,3 +25,9 @@ services:
       POSTGRES_DB: sidus_backend
       POSTGRES_USER: sidus
       POSTGRES_PASSWORD: Nuwr5bbT
+
+  redis:
+    image: redis:6-alpine
+    restart: on-failure
+    ports:
+      - '6379:6379'
