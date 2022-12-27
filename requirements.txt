@@ -6,3 +6,6 @@ uvicorn==0.18.3
 # database
 sqlmodel==0.0.8
 psycopg2-binary
+
+# passwords
+passlib[bcrypt]==1.7.4
