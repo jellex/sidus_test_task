@@ -1,0 +1,25 @@
+version: '3'
+services:
+  sidus-backend-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: on-failure
+    ports:
+      - '8000:8000'
+    volumes:
+      - ./:/code
+    links:
+      - pgsql
+    environment:
+      DB_URL: 'postgres://sidus:$uwr5bbT@pgsql/sidus_backend'
+
+  pgsql:
+    image: postgres:14-alpine
+    restart: on-failure
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_DB: sidus_backend
+      POSTGRES_USER: sidus
+      POSTGRES_PASSWORD: $uwr5bbT
