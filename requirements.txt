@@ -9,3 +9,6 @@ psycopg2-binary
 
 # passwords
 passlib[bcrypt]==1.7.4
+
+# redis
+aioredis==2.0.1
