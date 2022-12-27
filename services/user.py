@@ -4,6 +4,7 @@ from pydantic.types import PositiveInt
 
 from models.services.user import UserDBService
 from models.user import User
+from services.caching import CachingService
 from services.hashing import HasherService
 from utils.errors import UserDoesNotExistError
 
@@ -19,9 +20,16 @@ class UserService:
 
     @staticmethod
     async def get_user(user_id: Optional[PositiveInt] = None, login: Optional[str] = None) -> User:
-        user = UserDBService.get_user(user_id, login)
+        user = await CachingService.get_value(f"Users:{user_id}")
+        if user:
+            user = User(**user)
+            print("cache hit")
+        else:
+            user = UserDBService.get_user(user_id, login)
+            print("cache miss")
         if not user:
             raise UserDoesNotExistError
+        await CachingService.set_value(f"Users:{user.id}", user.dict())
         return user
 
     @staticmethod
@@ -30,4 +38,5 @@ class UserService:
         if not user:
             raise UserDoesNotExistError
         updated_user = UserDBService.update_user(user, password, name)
+        await CachingService.delete_key(f"Users:{updated_user.id}")
         return updated_user
