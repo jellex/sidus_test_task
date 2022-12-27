@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from fastapi.params import Body, Depends
+from fastapi.params import Body, Depends, Path
 from fastapi.security import HTTPBearer
 from fastapi_jwt_auth import AuthJWT
 from pydantic.types import PositiveInt
@@ -11,9 +11,9 @@ from utils.jwt import check_jwt_auth_and_return_user_id, create_access_token
 user_router = APIRouter()
 
 
-@user_router.get("/get_user/", response_model=User)
+@user_router.get("/get_user/{user_id}", response_model=User)
 async def get_user(
-    user_id: PositiveInt = Body(...),
+    user_id: PositiveInt = Path(...),
 ) -> User:
     user = await UserService.get_user(user_id)
     return user
