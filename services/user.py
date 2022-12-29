@@ -1,3 +1,4 @@
+import asyncio
 import logging
 from typing import Optional
 
@@ -19,7 +20,7 @@ class UserService:
 
     @staticmethod
     async def get_user(user_id: Optional[PositiveInt] = None, login: Optional[str] = None) -> User:
-        user = await CachingService.get_value(f"Users:{user_id}")
+        user = await CachingService.get_value(f"Users:{user_id}-{login}")
         if user:
             user = User(**user)
             logging.warning("cache hit")
@@ -28,7 +29,7 @@ class UserService:
             logging.warning("cache miss")
         if not user:
             raise UserDoesNotExistError
-        await CachingService.set_value(f"Users:{user.id}", user.dict())
+        await CachingService.set_value(f"Users:{user.id}-{login}", user.dict())
         return user
 
     @staticmethod
@@ -37,5 +38,9 @@ class UserService:
         if not user:
             raise UserDoesNotExistError
         updated_user = UserDBService.update_user(user, password, name)
-        await CachingService.delete_key(f"Users:{updated_user.id}")
+        await asyncio.gather(
+            CachingService.delete_key(f"Users:{updated_user.id}-{updated_user.login}"),
+            CachingService.delete_key(f"Users:{updated_user.id}-None"),
+            CachingService.delete_key(f"Users:None-{updated_user.login}"),
+        )
         return updated_user
