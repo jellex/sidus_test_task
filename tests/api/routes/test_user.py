@@ -4,7 +4,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from models.user import User
-from utils.errors import UserDoesNotExistError
+from utils.errors import UserDoesNotExistError, UserAlreadyExistError
 
 get_user_url = "/get_user"
 create_user_url = "/create_user"
@@ -86,6 +86,23 @@ class TestCreateUser:
             "name": None,
             "password": "$2b$12$O3MYXaKY5uw6TJ9PSQDI5uCMh3bj8ZQjpAUtkhinrRDiOQhSkuUEi",
             "access_token": "test_access_token",
+        }
+
+        create_user_mock.assert_awaited_with("test_user", "test_password")
+
+    @pytest.mark.asyncio()
+    @patch(f"{user_service_path}.create_user")
+    async def test_create_user_user_already_exist_error(
+        self, create_user_mock: AsyncMock,
+        client: TestClient,
+        user_db_fixture: User
+    ):
+        create_user_mock.side_effect = UserAlreadyExistError
+
+        result = client.post(f"{create_user_url}/", json={"login": "test_user", "password": "test_password"})
+        assert result.status_code == 400
+        assert result.json() == {
+            "detail": "user with specified login already exist. please, choose another login"
         }
 
         create_user_mock.assert_awaited_with("test_user", "test_password")
