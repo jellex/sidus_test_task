@@ -29,7 +29,7 @@ class UserService:
             logging.warning("cache miss")
         if not user:
             raise UserDoesNotExistError
-        await CachingService.set_value(f"Users:{user.id}-{login}", user.dict())
+        await CachingService.set_value(f"Users:{user_id}-{login}", user.dict())
         return user
 
     @staticmethod
