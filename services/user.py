@@ -1,3 +1,4 @@
+import logging
 from typing import Optional
 
 from pydantic.types import PositiveInt
@@ -21,10 +22,10 @@ class UserService:
         user = await CachingService.get_value(f"Users:{user_id}")
         if user:
             user = User(**user)
-            print("cache hit")
+            logging.warning("cache hit")
         else:
             user = UserDBService.get_user(user_id, login)
-            print("cache miss")
+            logging.warning("cache miss")
         if not user:
             raise UserDoesNotExistError
         await CachingService.set_value(f"Users:{user.id}", user.dict())
