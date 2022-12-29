@@ -11,7 +11,7 @@ from api.routes import (
 )
 from clients.database import engine
 from config import Config
-from utils.errors import UserDoesNotExistError
+from utils.errors import UserDoesNotExistError, UserAlreadyExistError
 
 
 def init_api(config: Config):
@@ -128,3 +128,13 @@ def _register_exception_handlers(app: FastAPI):
         else:
             detail = str(exc)
         return JSONResponse({"detail": detail}, status_code=404)
+
+    @app.exception_handler(UserAlreadyExistError)
+    async def user_already_exist_exception_handler(
+        request: Request, exc: UserAlreadyExistError
+    ):
+        if not exc.args:
+            detail = "user with specified login already exist. please, choose another login"
+        else:
+            detail = str(exc)
+        return JSONResponse({"detail": detail}, status_code=400)
