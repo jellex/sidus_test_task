@@ -42,4 +42,6 @@ class UserDBService:
             user_model.name = name
         with get_session() as session:
             session.add(user_model)
+            session.commit()
+            session.refresh(user_model)
         return user_model
