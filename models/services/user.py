@@ -1,9 +1,11 @@
 from typing import Optional
 
 from pydantic.types import PositiveInt
+from sqlalchemy.exc import IntegrityError
 
 from clients.database import get_session
 from models.user import User
+from utils.errors import UserAlreadyExistError
 
 
 class UserDBService:
@@ -12,8 +14,13 @@ class UserDBService:
         with get_session() as session:
             user = User(login=login, password=password)
             session.add(user)
-            session.commit()
-            session.refresh(user)
+            try:
+                session.commit()
+                session.refresh(user)
+            except IntegrityError:
+                session.rollback()
+                session.close()
+                raise UserAlreadyExistError
         return user
 
     @staticmethod
