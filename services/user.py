@@ -13,9 +13,7 @@ class UserService:
     @staticmethod
     async def create_user(login: str, password: str) -> User:
         hashed_password = HasherService.get_password_hash(password)
-        user = UserDBService.get_user(login=login)
-        if not user:
-            user = UserDBService.create_user(login, hashed_password)
+        user = UserDBService.create_user(login, hashed_password)
         return user
 
     @staticmethod
