@@ -40,4 +40,3 @@ class TestRedisClient:
         result = await redis_client.get("test")
 
         assert result is None
-

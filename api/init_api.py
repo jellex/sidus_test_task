@@ -1,17 +1,15 @@
 import pydantic
 from fastapi import FastAPI, Request
 from fastapi_jwt_auth.exceptions import AuthJWTException
+from sqlmodel import SQLModel
 from starlette.middleware.cors import CORSMiddleware
 from starlette.middleware.gzip import GZipMiddleware
 from starlette.responses import JSONResponse
-from sqlmodel import SQLModel
 
-from api.routes import (
-    user_router,
-)
+from api.routes import user_router
 from clients.database import engine
 from config import Config
-from utils.errors import UserDoesNotExistError, UserAlreadyExistError
+from utils.errors import UserAlreadyExistError, UserDoesNotExistError
 
 
 def init_api(config: Config):
@@ -134,7 +132,9 @@ def _register_exception_handlers(app: FastAPI):
         request: Request, exc: UserAlreadyExistError
     ):
         if not exc.args:
-            detail = "user with specified login already exist. please, choose another login"
+            detail = (
+                "user with specified login already exist. please, choose another login"
+            )
         else:
             detail = str(exc)
         return JSONResponse({"detail": detail}, status_code=400)

@@ -24,7 +24,9 @@ class UserDBService:
         return user
 
     @staticmethod
-    def get_user(user_id: Optional[PositiveInt] = None, login: Optional[str] = None) -> Optional[User]:
+    def get_user(
+        user_id: Optional[PositiveInt] = None, login: Optional[str] = None
+    ) -> Optional[User]:
         filters = []
         if user_id:
             filters.append(User.id == user_id)
@@ -35,7 +37,9 @@ class UserDBService:
         return result
 
     @staticmethod
-    def update_user(user_model: User, password: Optional[str] = None, name: Optional[str] = None) -> User:
+    def update_user(
+        user_model: User, password: Optional[str] = None, name: Optional[str] = None
+    ) -> User:
         if password:
             user_model.password = password
         if name:

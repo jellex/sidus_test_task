@@ -1,4 +1,4 @@
-from unittest.mock import patch, Mock
+from unittest.mock import Mock, patch
 
 import pytest
 from sqlmodel import Session
@@ -12,7 +12,7 @@ class TestUserDBService:
     class TestCreateUser:
         @patch("models.services.user.get_session")
         def test_create_user_success(
-            self, get_session_mock: Mock,  db_session: Session, clear_db
+            self, get_session_mock: Mock, db_session: Session, clear_db
         ):
             get_session_mock.return_value = db_session
             user = UserDBService.create_user("test_login", "test_password")
@@ -29,7 +29,7 @@ class TestUserDBService:
 
         @patch("models.services.user.get_session")
         def test_create_user_raise_user_already_exist_error(
-            self, get_session_mock: Mock,  db_session: Session, clear_db
+            self, get_session_mock: Mock, db_session: Session, clear_db
         ):
             get_session_mock.return_value = db_session
             UserDBService.create_user("test_login", "test_password")

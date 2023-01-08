@@ -19,7 +19,9 @@ class UserService:
         return user
 
     @staticmethod
-    async def get_user(user_id: Optional[PositiveInt] = None, login: Optional[str] = None) -> User:
+    async def get_user(
+        user_id: Optional[PositiveInt] = None, login: Optional[str] = None
+    ) -> User:
         user = await CachingService.get_value(f"Users:{user_id}-{login}")
         if user:
             user = User(**user)
@@ -33,7 +35,9 @@ class UserService:
         return user
 
     @staticmethod
-    async def update_user(user_id: PositiveInt, password: Optional[str] = None, name: Optional[str] = None) -> User:
+    async def update_user(
+        user_id: PositiveInt, password: Optional[str] = None, name: Optional[str] = None
+    ) -> User:
         user = UserDBService.get_user(user_id)
         if not user:
             raise UserDoesNotExistError

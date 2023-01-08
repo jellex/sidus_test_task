@@ -4,7 +4,7 @@ import pytest  # noqa
 from aioredis import Redis
 from fastapi.testclient import TestClient
 from sqlalchemy.future import Engine
-from sqlmodel import create_engine, Session, SQLModel
+from sqlmodel import Session, SQLModel, create_engine
 
 from api.init_api import FastAPI, init_api
 from clients.database import get_session
