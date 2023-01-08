@@ -88,3 +88,30 @@ class TestUserDBService:
             user_ = UserDBService.get_user(login="not_existed")
 
             assert user_ is None
+
+    class TestUpdateUser:
+        @patch("models.services.user.get_session")
+        def test_update_user_password(
+            self, get_session_mock: Mock, db_session: Session, clear_db
+        ):
+            get_session_mock.return_value = db_session
+            user = User(login="test_login", password="test_password")
+            db_session.add(user)
+            db_session.commit()
+
+            user_ = UserDBService.update_user(user, password="new_password")
+
+            assert user_.password == "new_password"
+
+        @patch("models.services.user.get_session")
+        def test_update_user_name(
+            self, get_session_mock: Mock, db_session: Session, clear_db
+        ):
+            get_session_mock.return_value = db_session
+            user = User(login="test_login", password="test_password")
+            db_session.add(user)
+            db_session.commit()
+
+            user_ = UserDBService.update_user(user, name="new_name")
+
+            assert user_.name == "new_name"
