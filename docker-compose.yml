@@ -13,7 +13,7 @@ services:
       - pgsql
       - redis
     environment:
-      DATABASE_URL: 'postgres://sidus:Nuwr5bbT@pgsql/sidus_backend'
+      DATABASE_URL: 'postgresql://sidus:Nuwr5bbT@pgsql/sidus_backend'
       REDIS_URL: 'redis://redis'
 
   pgsql:
