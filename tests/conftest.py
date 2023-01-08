@@ -47,11 +47,9 @@ def db_session(db_engine: Engine) -> Session:
 
 
 @pytest.fixture()
-def clear_db() -> None:
-    with get_session() as db_session:
-        db_session.execute(User.__table__.delete())
-        db_session.commit()
+def clear_db(db_session: Session) -> None:
+    db_session.execute(User.__table__.delete())
+    db_session.commit()
     yield
-    with get_session() as db_session:
-        db_session.execute(User.__table__.delete())
-        db_session.commit()
+    db_session.execute(User.__table__.delete())
+    db_session.commit()
