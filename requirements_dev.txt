@@ -1,0 +1,6 @@
+# format code
+black==22.8.0
+# format imports
+isort==5.10.1
+# pre-commit hooks
+pre-commit==2.20.0
