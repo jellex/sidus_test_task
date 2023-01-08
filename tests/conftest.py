@@ -15,7 +15,7 @@ PROJECT_ROOT_PATH = Path(__file__).parent.parent
 @pytest.fixture(scope="session")
 def config() -> Config:
     config = Config()
-    config.DATABASE_URL = f"sqlite:{PROJECT_ROOT_PATH}/test_db.sqlite"
+    config.DATABASE_URL = f"sqlite:///{PROJECT_ROOT_PATH}/test_db.sqlite"
     return config
 
 
