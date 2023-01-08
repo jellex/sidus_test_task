@@ -2,6 +2,8 @@ from pathlib import Path
 
 import pytest  # noqa
 from fastapi.testclient import TestClient
+from sqlalchemy.future import Engine
+from sqlmodel import create_engine, Session, SQLModel
 
 from api.init_api import FastAPI, init_api
 from clients.database import get_session
@@ -28,6 +30,20 @@ def app(config: Config) -> FastAPI:
 @pytest.fixture()
 def client(app: FastAPI) -> TestClient:
     yield TestClient(app)
+
+
+@pytest.fixture(scope="session")
+def db_engine(config: Config) -> Engine:
+    engine = create_engine(config.DATABASE_URL)
+    # create database and table
+    SQLModel.metadata.create_all(engine)
+    return engine
+
+
+@pytest.fixture()
+def db_session(db_engine: Engine) -> Session:
+    with get_session(db_engine) as session:
+        yield session
 
 
 @pytest.fixture()
