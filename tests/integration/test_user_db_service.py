@@ -25,6 +25,7 @@ class TestUserDBService:
             user_ = db_session.query(User).get(1)
 
             assert user_ == user
+            get_session_mock.assert_called_with()
 
         @patch("models.services.user.get_session")
         def test_create_user_raise_user_already_exist_error(
@@ -35,6 +36,8 @@ class TestUserDBService:
 
             with pytest.raises(UserAlreadyExistError, match=""):
                 UserDBService.create_user("test_login", "test_password")
+
+            get_session_mock.assert_called_with()
 
     class TestGetUser:
         @patch("models.services.user.get_session")
@@ -49,6 +52,7 @@ class TestUserDBService:
             user_ = UserDBService.get_user(user_id=1)
 
             assert user == user_
+            get_session_mock.assert_called_with()
 
         @patch("models.services.user.get_session")
         def test_get_user_by_id_not_found(
@@ -62,6 +66,7 @@ class TestUserDBService:
             user_ = UserDBService.get_user(user_id=2)
 
             assert user_ is None
+            get_session_mock.assert_called_with()
 
         @patch("models.services.user.get_session")
         def test_get_user_by_login_success(
@@ -75,6 +80,7 @@ class TestUserDBService:
             user_ = UserDBService.get_user(login="test_login")
 
             assert user == user_
+            get_session_mock.assert_called_with()
 
         @patch("models.services.user.get_session")
         def test_get_user_by_login_not_found(
@@ -88,6 +94,7 @@ class TestUserDBService:
             user_ = UserDBService.get_user(login="not_existed")
 
             assert user_ is None
+            get_session_mock.assert_called_with()
 
     class TestUpdateUser:
         @patch("models.services.user.get_session")
@@ -102,6 +109,7 @@ class TestUserDBService:
             user_ = UserDBService.update_user(user, password="new_password")
 
             assert user_.password == "new_password"
+            get_session_mock.assert_called_with()
 
         @patch("models.services.user.get_session")
         def test_update_user_name(
@@ -115,3 +123,4 @@ class TestUserDBService:
             user_ = UserDBService.update_user(user, name="new_name")
 
             assert user_.name == "new_name"
+            get_session_mock.assert_called_with()
