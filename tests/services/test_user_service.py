@@ -1,4 +1,4 @@
-from unittest.mock import patch, Mock, AsyncMock, call
+from unittest.mock import AsyncMock, Mock, call, patch
 
 import pytest
 
@@ -17,9 +17,10 @@ class TestUserService:
         @patch(f"{user_db_service_path}.create_user")
         @patch(f"{hasher_service_path}.get_password_hash")
         async def test_create_user_successfully(
-            self, get_password_hash_mock: Mock,
+            self,
+            get_password_hash_mock: Mock,
             create_user_mock: Mock,
-            user_db_fixture: User
+            user_db_fixture: User,
         ):
             get_password_hash_mock.return_value = "hashed_password"
             user_db_fixture.password = "hashed_password"
@@ -35,9 +36,10 @@ class TestUserService:
         @patch(f"{user_db_service_path}.create_user")
         @patch(f"{hasher_service_path}.get_password_hash")
         async def test_create_user_already_existed(
-            self, get_password_hash_mock: Mock,
+            self,
+            get_password_hash_mock: Mock,
             create_user_mock: Mock,
-            user_db_fixture: User
+            user_db_fixture: User,
         ):
             get_password_hash_mock.return_value = "hashed_password"
             user_db_fixture.password = "hashed_password"
@@ -61,7 +63,7 @@ class TestUserService:
             get_user_mock: Mock,
             set_value_mock: AsyncMock,
             warning_mock: Mock,
-            user_db_fixture: User
+            user_db_fixture: User,
         ):
             get_value_mock.return_value = user_db_fixture.dict()
 
@@ -77,8 +79,8 @@ class TestUserService:
                     "name": None,
                     "password": "$2b$12$O3MYXaKY5uw6TJ9PSQDI5uCMh3bj8ZQjpAUtkhinrRDiOQhSkuUEi",
                     "login": "test_user",
-                    "id": 1
-                }
+                    "id": 1,
+                },
             )
 
         @pytest.mark.asyncio()
@@ -90,7 +92,7 @@ class TestUserService:
             get_value_mock: AsyncMock,
             get_user_mock: Mock,
             set_value_mock: AsyncMock,
-            user_db_fixture: User
+            user_db_fixture: User,
         ):
             get_value_mock.return_value = None
             get_user_mock.return_value = user_db_fixture
@@ -106,8 +108,8 @@ class TestUserService:
                     "name": None,
                     "password": "$2b$12$O3MYXaKY5uw6TJ9PSQDI5uCMh3bj8ZQjpAUtkhinrRDiOQhSkuUEi",
                     "login": "test_user",
-                    "id": 1
-                }
+                    "id": 1,
+                },
             )
 
         @pytest.mark.asyncio()
@@ -119,7 +121,7 @@ class TestUserService:
             get_value_mock: AsyncMock,
             get_user_mock: Mock,
             set_value_mock: AsyncMock,
-            user_db_fixture: User
+            user_db_fixture: User,
         ):
             get_value_mock.return_value = None
             get_user_mock.return_value = None
@@ -142,7 +144,7 @@ class TestUserService:
             get_user_mock: Mock,
             set_value_mock: AsyncMock,
             warning_mock: Mock,
-            user_db_fixture: User
+            user_db_fixture: User,
         ):
             get_value_mock.return_value = user_db_fixture.dict()
 
@@ -158,8 +160,8 @@ class TestUserService:
                     "name": None,
                     "password": "$2b$12$O3MYXaKY5uw6TJ9PSQDI5uCMh3bj8ZQjpAUtkhinrRDiOQhSkuUEi",
                     "login": "test_user",
-                    "id": 1
-                }
+                    "id": 1,
+                },
             )
 
         @pytest.mark.asyncio()
@@ -171,7 +173,7 @@ class TestUserService:
             get_value_mock: AsyncMock,
             get_user_mock: Mock,
             set_value_mock: AsyncMock,
-            user_db_fixture: User
+            user_db_fixture: User,
         ):
             get_value_mock.return_value = None
             get_user_mock.return_value = user_db_fixture
@@ -187,8 +189,8 @@ class TestUserService:
                     "name": None,
                     "password": "$2b$12$O3MYXaKY5uw6TJ9PSQDI5uCMh3bj8ZQjpAUtkhinrRDiOQhSkuUEi",
                     "login": "test_user",
-                    "id": 1
-                }
+                    "id": 1,
+                },
             )
 
         @pytest.mark.asyncio()
@@ -200,7 +202,7 @@ class TestUserService:
             get_value_mock: AsyncMock,
             get_user_mock: Mock,
             set_value_mock: AsyncMock,
-            user_db_fixture: User
+            user_db_fixture: User,
         ):
             get_value_mock.return_value = None
             get_user_mock.return_value = None
@@ -222,7 +224,7 @@ class TestUserService:
             get_user_mock: Mock,
             update_user_mock: Mock,
             delete_key_mock: AsyncMock,
-            user_db_fixture: User
+            user_db_fixture: User,
         ):
             get_user_mock.return_value = user_db_fixture
             user_db_fixture.name = "new_name"
@@ -233,11 +235,13 @@ class TestUserService:
 
             get_user_mock.assert_called_with(1)
             update_user_mock.assert_called_with(user_db_fixture, None, "new_name")
-            delete_key_mock.assert_has_calls([
-                call(f"Users:1-test_user"),
-                call(f"Users:1-None"),
-                call(f"Users:None-test_user"),
-            ])
+            delete_key_mock.assert_has_calls(
+                [
+                    call(f"Users:1-test_user"),
+                    call(f"Users:1-None"),
+                    call(f"Users:None-test_user"),
+                ]
+            )
 
         @pytest.mark.asyncio()
         @patch(f"{caching_service_path}.delete_key")
@@ -248,7 +252,7 @@ class TestUserService:
             get_user_mock: Mock,
             update_user_mock: Mock,
             delete_key_mock: AsyncMock,
-            user_db_fixture: User
+            user_db_fixture: User,
         ):
             get_user_mock.return_value = None
 
