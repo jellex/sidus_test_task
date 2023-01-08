@@ -35,3 +35,56 @@ class TestUserDBService:
 
             with pytest.raises(UserAlreadyExistError, match=""):
                 UserDBService.create_user("test_login", "test_password")
+
+    class TestGetUser:
+        @patch("models.services.user.get_session")
+        def test_get_user_by_id_success(
+            self, get_session_mock: Mock, db_session: Session, clear_db
+        ):
+            get_session_mock.return_value = db_session
+            user = User(login="test_login", password="test_password")
+            db_session.add(user)
+            db_session.commit()
+
+            user_ = UserDBService.get_user(user_id=1)
+
+            assert user == user_
+
+        @patch("models.services.user.get_session")
+        def test_get_user_by_id_not_found(
+            self, get_session_mock: Mock, db_session: Session, clear_db
+        ):
+            get_session_mock.return_value = db_session
+            user = User(login="test_login", password="test_password")
+            db_session.add(user)
+            db_session.commit()
+
+            user_ = UserDBService.get_user(user_id=2)
+
+            assert user_ is None
+
+        @patch("models.services.user.get_session")
+        def test_get_user_by_login_success(
+            self, get_session_mock: Mock, db_session: Session, clear_db
+        ):
+            get_session_mock.return_value = db_session
+            user = User(login="test_login", password="test_password")
+            db_session.add(user)
+            db_session.commit()
+
+            user_ = UserDBService.get_user(login="test_login")
+
+            assert user == user_
+
+        @patch("models.services.user.get_session")
+        def test_get_user_by_login_not_found(
+            self, get_session_mock: Mock, db_session: Session, clear_db
+        ):
+            get_session_mock.return_value = db_session
+            user = User(login="test_login", password="test_password")
+            db_session.add(user)
+            db_session.commit()
+
+            user_ = UserDBService.get_user(login="not_existed")
+
+            assert user_ is None
