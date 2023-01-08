@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import pytest  # noqa
+from aioredis import Redis
 from fastapi.testclient import TestClient
 from sqlalchemy.future import Engine
 from sqlmodel import create_engine, Session, SQLModel
@@ -18,6 +19,7 @@ PROJECT_ROOT_PATH = Path(__file__).parent.parent
 def config() -> Config:
     config = Config()
     config.DATABASE_URL = f"sqlite:///{PROJECT_ROOT_PATH}/test_db.sqlite"
+    config.REDIS_URL = "redis://localhost/1"
     return config
 
 
@@ -53,3 +55,8 @@ def clear_db(db_session: Session) -> None:
     yield
     db_session.execute(User.__table__.delete())
     db_session.commit()
+
+
+@pytest.fixture()
+def redis_client(config: Config) -> Redis:
+    return Redis.from_url(config.REDIS_URL, encoding="utf-8", decode_responses=True)
